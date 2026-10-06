@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f1e8">
+<title>My Path — Growth Tracker</title>
+<style>
+:root{--bg:#f5f1e8;--card:#fffdf8;--ink:#263238;--muted:#68736f;--accent:#687b6e;--line:#ddd8cc;--soft:#edf0eb}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:10;padding:calc(16px + env(safe-area-inset-top)) 16px 12px;background:rgba(245,241,232,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:28px}.sub{font-size:13px;color:var(--muted);margin-top:3px}
+.tabs{position:sticky;top:83px;z-index:9;background:rgba(245,241,232,.96);padding:9px 12px;display:flex;gap:7px;overflow-x:auto;border-bottom:1px solid var(--line);scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{flex:0 0 auto;text-decoration:none;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:12px;font-weight:650}
+.tabs a:hover,.tabs a:active{background:var(--accent);color:white}
+main{max-width:720px;margin:auto;padding:12px 16px 50px}
+section{display:none;scroll-margin-top:145px}
+section:first-of-type{display:block}
+section:target{display:block}
+body:has(section:target) section:first-of-type{display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin:12px 0;box-shadow:0 4px 18px rgba(50,45,35,.05)}
+h2{font-size:21px;margin:0 0 10px}h3{font-size:16px;margin:18px 0 7px}
+p{line-height:1.55}.small{font-size:13px;color:var(--muted);line-height:1.5}
+.badge{display:inline-block;background:var(--soft);padding:5px 9px;border-radius:999px;font-size:12px;color:#526158}
+.hero{padding:18px 4px}.hero h2{font-size:25px}
+.row{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
+input[type=checkbox]{width:21px;height:21px;accent-color:var(--accent)}
+textarea,input[type=text],input[type=number]{width:100%;padding:11px;border:1px solid var(--line);border-radius:14px;background:white;color:var(--ink);font:inherit;margin-top:7px}
+textarea{min-height:90px}
+label.block{display:block;margin:12px 0}
+details{border-top:1px solid var(--line);padding:12px 0}summary{font-weight:700;cursor:pointer}
+.quote{font-style:italic;font-size:17px;line-height:1.5}
+.notice{padding:13px;border-radius:15px;background:var(--soft);font-size:13px;line-height:1.5}
+.stars{font-size:23px;letter-spacing:2px}
+.progress{height:10px;background:#e5e1d8;border-radius:99px;overflow:hidden}.bar{height:100%;width:65%;background:var(--accent)}
+.chart{height:190px;display:flex;align-items:end;gap:8px;padding:15px 8px;border-bottom:1px solid var(--line)}
+.barcol{flex:1;background:var(--accent);border-radius:7px 7px 0 0;min-height:8px;opacity:.8}.barcol:nth-child(1){height:40%}.barcol:nth-child(2){height:58%}.barcol:nth-child(3){height:45%}.barcol:nth-child(4){height:72%}.barcol:nth-child(5){height:66%}.barcol:nth-child(6){height:81%}.barcol:nth-child(7){height:76%}
+.labels{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;padding:5px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@media(prefers-color-scheme:dark){
+:root{--bg:#171914;--card:#20231f;--ink:#f1f0e9;--muted:#aeb5ad;--accent:#91a997;--line:#363a34;--soft:#29312b}
+header,.tabs{background:rgba(23,25,20,.96)}textarea,input[type=text],input[type=number]{background:#191b18;color:var(--ink)}.chart{border-color:var(--line)}
+}
+
+<style>
+.attribute-detail{padding:11px 0;border-top:1px solid var(--line)}
+.attribute-detail b{font-size:15px}
+.rating-row{padding:11px 0;border-bottom:1px solid var(--line)}
+.rating-title{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.rating-buttons{display:flex;gap:3px;margin-top:7px}
+.rating-buttons button{border:0;background:transparent;font-size:25px;padding:1px 4px;color:#c6c0b5}
+.rating-buttons button.selected{color:#8c6f56}
+.rating-help{font-size:11px;color:var(--muted)}
+
+<style>
+.friendBtn{border:0;border-radius:14px;padding:11px 14px;background:var(--accent);color:white;font-weight:700}
+.friend-card{border:1px solid var(--line);border-radius:16px;padding:13px;margin-top:10px}
+.friend-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.friend-actions button{border:1px solid var(--line);background:var(--card);border-radius:11px;padding:8px 10px;color:var(--ink)}
+.note-card{padding:11px 0;border-top:1px solid var(--line)}
+</style>
+
+
+
+<style>
+.tracker-controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tracker-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:13px;padding:10px 12px;font:inherit;font-weight:650}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.metric{padding:13px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}
+.metric strong{display:block;font-size:22px;margin-top:4px}
+.history-chart{height:210px;display:flex;align-items:end;gap:6px;padding:14px 4px;border-bottom:1px solid var(--line)}
+.history-bar{flex:1;min-width:4px;background:var(--accent);border-radius:6px 6px 0 0}
+.history-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);padding-top:5px}
+.period-buttons{display:flex;gap:6px;overflow:auto}.period-buttons button{white-space:nowrap}
+.save-status{font-size:12px;color:var(--muted);margin-top:8px}
+
+<style>
+.attribute-detail{padding:11px 0;border-top:1px solid var(--line)}
+.attribute-detail b{font-size:15px}
+.rating-row{padding:11px 0;border-bottom:1px solid var(--line)}
+.rating-title{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.rating-buttons{display:flex;gap:3px;margin-top:7px}
+.rating-buttons button{border:0;background:transparent;font-size:25px;padding:1px 4px;color:#c6c0b5}
+.rating-buttons button.selected{color:#8c6f56}
+.rating-help{font-size:11px;color:var(--muted)}
+
+.privacy-banner{display:flex;gap:10px;align-items:flex-start;padding:14px;border:1px solid rgba(80,120,180,.28);border-radius:16px;background:rgba(80,120,180,.08);margin:14px 0}.privacy-banner strong{white-space:nowrap}.privacy-grid{display:grid;gap:10px}.privacy-row{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:14px}.privacy-row span{display:grid;gap:3px}.privacy-row small{opacity:.68}.privacy-row.locked{opacity:.65}.friend-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.friend-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:.82rem;opacity:.7;margin:10px 0}.partner-badge{font-size:.78rem;padding:5px 9px;border-radius:999px;background:rgba(0,0,0,.06)}.partner-badge.on{background:rgba(70,120,80,.14)}.empty-state{padding:18px;border:1px dashed var(--border);border-radius:16px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:650px){.two-col{grid-template-columns:1fr}}
+</style>
+
+</head>
+<body>
+<header><h1>My Path</h1><div class="sub">A personal framework for growing in faith, health, resilience, and connection.</div></header>
+
+<nav class="tabs" aria-label="Path sections">
+<a href="#overview">Overview</a>
+<a href="#daily">Daily</a>
+<a href="#spiritual">Spiritual</a>
+<a href="#repentance">Repentance</a>
+<a href="#attributes">Attributes</a>
+<a href="#physical">Physical</a>
+<a href="#mind">Mind</a>
+<a href="#social">Social</a>
+<a href="#friends">Friends</a><a href="#weekly">Weekly</a>
+</nav>
+
+<main>
+<section id="overview">
+<div class="hero"><span class="badge">Your Path</span><h2>Progress, not perfection.</h2>
+<p class="small">This dashboard turns your daily check-ins into a simple history so you can see consistency over time. Nothing here is a grade. It is information you can use to choose your next small step.</p></div>
+
+<div class="card">
+<h2>Today</h2>
+<div class="metric-grid">
+<div class="metric"><span class="small">Daily progress</span><strong id="todayPercent">0%</strong></div>
+<div class="metric"><span class="small">Current streak</span><strong id="streak">0 days</strong></div>
+</div>
+<div class="progress" style="margin-top:14px"><div class="bar" id="todayBar" style="width:0"></div></div>
+<div class="save-status" id="saveStatus">Saved on this device.</div>
+</div>
+
+<div class="card">
+<h2>Progress history</h2>
+<div class="period-buttons">
+<button type="button" onclick="setPeriod('week')">Past week</button>
+<button type="button" onclick="setPeriod('month')">Past month</button>
+<button type="button" onclick="setPeriod('year')">Past year</button>
+</div>
+<div class="history-chart" id="historyChart"></div>
+<div class="history-labels"><span id="historyStart"></span><span id="historyEnd"></span></div>
+<p class="small" id="historySummary">Complete daily check-ins to build your history.</p>
+</div>
+
+<div class="card">
+<h2>Four parts of the path</h2>
+<div class="row"><b>Spiritual</b><span class="small">Faith, prayer, study, repentance, service, character</span></div>
+<div class="row"><b>Physical</b><span class="small">Movement, strength, recovery, health</span></div>
+<div class="row"><b>Mind</b><span class="small">Emotions, resilience, reflection, support</span></div>
+<div class="row"><b>Social</b><span class="small">Love, listening, courage, belonging, joy</span></div>
+</div>
+
+<div class="card">
+<h2>How to use your history</h2>
+<p class="small">A low day is not a failure. Look for patterns: Are walks becoming more consistent? Are you making time for prayer? Are you connecting with people? Are difficult emotions becoming easier to understand?</p>
+<div class="tracker-controls">
+<button type="button" onclick="saveProgress()">Save now</button>
+<button type="button" onclick="exportBackup()">Export backup</button>
+<button type="button" onclick="clearHistory()">Clear history</button>
+</div>
+</div>
+</section>
+
+<section id="daily">
+<div class="card"><h2>Daily Path</h2><p class="small">You do not need to finish everything. Choose the practices that help you move forward today.</p>
+<h3>Spiritual</h3>
+<label class="row"><input type="checkbox" data-track="prayer">Prayer / reflection</label><label class="row"><input type="checkbox" data-track="study">Scripture or meaningful study</label><label class="row"><input type="checkbox" data-track="repent">Practice repentance / course correction</label><label class="row"><input type="checkbox" data-track="attribute">Practice one virtue</label><label class="row"><input type="checkbox" data-track="serve">Serve someone</label>
+<h3>Physical</h3><label class="row"><input type="checkbox" data-track="walk">Daily walk</label><label class="row"><input type="checkbox" data-track="strength">Strength or movement</label><label class="row"><input type="checkbox" data-track="bodycare">Care for my body and recover</label>
+<h3>Mind</h3><label class="row"><input type="checkbox" data-track="checkin">Check in with myself</label><label class="row"><input type="checkbox" data-track="process">Process a difficult emotion</label><label class="row"><input type="checkbox" data-track="reset">Do something healthy that helps me reset</label>
+<h3>Social</h3><label class="row"><input type="checkbox" data-track="talk">Talk to someone</label><label class="row"><input type="checkbox" data-track="interest">Show genuine interest</label><label class="row"><input type="checkbox" data-track="fun">Have fun with someone</label>
+<label class="block">Reflection<textarea id="dailyReflection" placeholder="What mattered today?"></textarea></label>
+</div>
+<div class="card"><h2>How to approach a hard day</h2>
+<details open><summary>If I only have 10% today</summary><p class="small">Choose one spiritual action, one body action, one emotional action, and one connection action. Tiny counts.</p></details>
+<details><summary>If I missed yesterday</summary><p class="small">Do not punish yourself by trying to “catch up.” Start today with one honest step.</p></details>
+<details><summary>Evening review</summary><p class="small">Ask: What went well? What was difficult? What did I learn? What is one thing I want to carry into tomorrow?</p></details>
+</div></section>
+
+<section id="spiritual">
+<div class="card"><h2>Spiritual Path</h2><p class="small">For your own use, this section can be explicitly Christ-centered. Someone else can adapt it to their own faith or values.</p>
+<details open><summary>Faith & trust</summary><p class="small">What am I trusting God with today? What would faith look like in one ordinary decision?</p></details>
+<details><summary>Prayer</summary><p class="small">Try gratitude, honesty, asking for help, listening, and committing to one action.</p></details>
+<details><summary>Scripture study</summary><p class="small">Read slowly. Look for what the passage teaches about Christ, God, yourself, and how to live.</p></details>
+<details><summary>Service</summary><p class="small">Look for a specific person and a specific need. Small acts count.</p></details>
+<label class="block">What am I being invited toward?<textarea></textarea></label>
+</div>
+<div class="card"><h2>A deeper spiritual rhythm</h2>
+<details open><summary>Morning — orient yourself</summary><p class="small">Pray, remember who you want to become, and choose one Christlike quality or principle to practice.</p></details>
+<details><summary>During the day — notice</summary><p class="small">Watch for promptings, opportunities to serve, moments of temptation, and moments when you need to slow down.</p></details>
+<details><summary>Study — learn and apply</summary><p class="small">Ask: What does this teach me about Christ? What does it teach me about myself? What will I do differently?</p></details>
+<details><summary>Evening — return</summary><p class="small">Thank God, acknowledge mistakes, repent where needed, and identify one thing to improve tomorrow.</p></details>
+</div>
+<div class="card"><h2>Repentance — returning to Christ</h2>
+<p class="small">Repentance belongs at the center of spiritual growth. It is a process of turning toward Jesus Christ, changing direction, repairing what you can, and continuing forward.</p>
+<details open><summary>Recognize</summary><p class="small">Notice what happened and what needs to change without hiding from it.</p></details>
+<details><summary>Take responsibility</summary><p class="small">Own your choices honestly while remembering that mistakes do not determine your worth.</p></details>
+<details><summary>Turn to Christ</summary><p class="small">Pray, seek forgiveness, ask for strength, and trust the Savior rather than relying only on your own willpower.</p></details>
+<details><summary>Repair and change</summary><p class="small">Apologize, make restitution where appropriate, change the situation, and build a better pattern.</p></details>
+<details><summary>Move forward</summary><p class="small">Do not confuse repeated shame with repentance. Let Christ help you become different and keep walking.</p></details>
+<label class="row"><input type="checkbox" data-repent="recognize">I recognized something I need to change</label>
+<label class="row"><input type="checkbox" data-repent="turn">I turned to Christ in prayer</label>
+<label class="row"><input type="checkbox" data-repent="repair">I made or planned a repair</label>
+<label class="row"><input type="checkbox" data-repent="change">I chose a different path</label>
+<label class="block">What is Christ inviting me to change?<textarea id="spiritualRepNote"></textarea></label>
+</div>
+</section>
+
+<section id="repentance">
+<div class="card"><h2>Repentance & Returning</h2><p class="small">Repentance is not self-punishment. It is turning back toward Christ and what is right.</p>
+<label class="row"><input type="checkbox">Recognize what needs to change</label><label class="row"><input type="checkbox">Take responsibility without shame</label><label class="row"><input type="checkbox">Turn toward Christ and what is right</label><label class="row"><input type="checkbox">Repair what I can</label><label class="row"><input type="checkbox">Move forward</label>
+<div class="notice">A mistake is something to learn from and repair—not proof that you are hopeless.</div>
+<label class="block">What is my next honest step?<textarea></textarea></label>
+</div>
+<div class="card"><h2>Make repentance practical</h2>
+<details open><summary>Recognize</summary><p class="small">Be specific. “I need to be kinder” becomes “I spoke harshly when I was frustrated.”</p></details>
+<details><summary>Take responsibility</summary><p class="small">Own your part without pretending everything is your fault. Responsibility creates room for change.</p></details>
+<details><summary>Turn to Christ</summary><p class="small">Bring the problem to God honestly. Seek forgiveness, strength, wisdom, and a better direction.</p></details>
+<details><summary>Repair</summary><p class="small">Apologize, replace what was damaged, change the situation, or ask what restitution is appropriate.</p></details>
+<details><summary>Move forward</summary><p class="small">Do not make repeated self-condemnation your proof that you are repentant. Let changed behavior become the evidence.</p></details>
+</div></section>
+
+<section id="attributes">
+<div class="card"><h2>Christlike Attributes</h2>
+<p class="small">Rate your <b>current practice</b>, not your worth. A 1 means “I need a lot of practice here”; 5 means “I am practicing this consistently.” The goal is awareness and growth.</p>
+
+<div id="attributeRatings"></div>
+
+<label class="block">This week's focus
+<input type="text" id="attributeFocus" placeholder="Choose one attribute..."></label>
+
+<label class="block">What will practicing it look like?
+<textarea id="attributePlan" placeholder="Make it concrete: Who will I treat differently? What will I do? When will I practice it?"></textarea></label>
+
+<div class="notice"><b>Try this:</b> Pick one attribute for the week. Learn what it means, notice one moment when you could practice it, act, and review what you learned.</div>
+</div>
+
+<div class="card">
+<h2>20 Christlike qualities</h2>
+<div class="attribute-detail"><b>Faith</b><p class="small">Trust Jesus Christ enough to act on what you believe. <b>Practice:</b> Do one thing today because you trust God, even if you cannot see the whole outcome.</p></div>
+<div class="attribute-detail"><b>Hope</b><p class="small">Look toward the future with confidence in God's help. <b>Practice:</b> Write one good thing you are working toward.</p></div>
+<div class="attribute-detail"><b>Charity & Love</b><p class="small">Seek another person's good without needing something in return. <b>Practice:</b> Notice one person's need and respond.</p></div>
+<div class="attribute-detail"><b>Virtue</b><p class="small">Choose thoughts, words, and actions that are clean and worthy of trust. <b>Practice:</b> Replace one unhelpful habit with something that builds you.</p></div>
+<div class="attribute-detail"><b>Knowledge</b><p class="small">Keep learning truth and applying it. <b>Practice:</b> Study something that will make you wiser or more useful.</p></div>
+<div class="attribute-detail"><b>Patience</b><p class="small">Give people, yourself, and situations room to develop. <b>Practice:</b> Pause before reacting when something frustrates you.</p></div>
+<div class="attribute-detail"><b>Humility</b><p class="small">Be teachable and honest about what you do and do not know. <b>Practice:</b> Ask for feedback without becoming defensive.</p></div>
+<div class="attribute-detail"><b>Diligence</b><p class="small">Keep doing worthwhile things consistently. <b>Practice:</b> Finish one small responsibility you have been avoiding.</p></div>
+<div class="attribute-detail"><b>Obedience</b><p class="small">Choose to follow God's commandments and good principles. <b>Practice:</b> Act on something you already know is right.</p></div>
+<div class="attribute-detail"><b>Kindness</b><p class="small">Make another person's day lighter. <b>Practice:</b> Give a sincere compliment or helpful action.</p></div>
+<div class="attribute-detail"><b>Forgiveness</b><p class="small">Release the desire to keep carrying a grievance while still using wise boundaries. <b>Practice:</b> Pray for help letting go of one burden.</p></div>
+<div class="attribute-detail"><b>Self-Control</b><p class="small">Choose your response instead of being ruled by impulse. <b>Practice:</b> Pause, breathe, and choose the response you want to be proud of.</p></div>
+<div class="attribute-detail"><b>Compassion</b><p class="small">Notice suffering and respond with care. <b>Practice:</b> Ask someone what they need before assuming.</p></div>
+<div class="attribute-detail"><b>Courage</b><p class="small">Do what is right or meaningful even when you feel afraid. <b>Practice:</b> Take one small brave action.</p></div>
+<div class="attribute-detail"><b>Integrity</b><p class="small">Be the same person privately and publicly. <b>Practice:</b> Keep one promise you made to yourself.</p></div>
+<div class="attribute-detail"><b>Gratitude</b><p class="small">Recognize good things instead of overlooking them. <b>Practice:</b> Name three specific things you are grateful for.</p></div>
+<div class="attribute-detail"><b>Service</b><p class="small">Use your time and abilities to lift others. <b>Practice:</b> Do something useful that someone else does not have to ask for.</p></div>
+<div class="attribute-detail"><b>Perseverance</b><p class="small">Continue after setbacks. <b>Practice:</b> Restart one thing you stopped doing.</p></div>
+<div class="attribute-detail"><b>Meekness</b><p class="small">Have strength under control: confident without needing to dominate. <b>Practice:</b> Listen before trying to prove your point.</p></div>
+<div class="attribute-detail"><b>Teachability</b><p class="small">Stay open to correction and new understanding. <b>Practice:</b> Ask, “What can I learn from this?”</p></div>
+</div>
+</section>
+
+<section id="physical">
+<div class="card"><h2>Physical Path</h2><p class="small">The goal is becoming stronger, healthier, and more capable—not earning worth through appearance.</p>
+<details open><summary>Walking</summary><p class="small">A daily walk can support movement, reflection, fresh air, and consistency.</p></details>
+<details><summary>Strength</summary><p class="small">Build gradually with pushing, pulling, legs, and core. Your pull-up bar, dip station, dumbbells, and squat bar can support a balanced routine once set up safely.</p></details>
+<details><summary>Recovery</summary><p class="small">Rest, sleep, food, hydration, and easier days are part of becoming stronger.</p></details>
+<label class="block">What capability am I building?<textarea placeholder="Examples: stronger pull-ups, consistent walking, better stamina..."></textarea></label>
+</div>
+<div class="card"><h2>Build your body with purpose</h2>
+<details open><summary>Movement</summary><p class="small">Walk regularly. Treat movement as a normal part of caring for yourself rather than something you must earn.</p></details>
+<details><summary>Strength plan</summary><p class="small">Think in four categories: pull, push, legs, and full body/core. Start at a manageable level and gradually progress.</p></details>
+<details><summary>Recovery</summary><p class="small">Your body adapts during recovery. Schedule rest and easier days instead of treating exhaustion as success.</p></details>
+<details><summary>Progress markers</summary><p class="small">Track consistency, repetitions, strength, stamina, mobility, energy, and how capable you feel—not appearance.</p></details>
+</div>
+<div class="card"><h2>Nutrition & Fuel</h2>
+<p class="small">Nutrition is about giving your body what it needs for energy, growth, recovery, and daily life. It is not a punishment system or a competition.</p>
+<details open><summary>Balanced meals</summary><p class="small">Aim for a variety of foods across the day: protein sources, grains or other carbohydrates, fruits and vegetables, healthy fats, and foods you enjoy.</p></details>
+<details><summary>Hydration</summary><p class="small">Drink regularly and pay attention to thirst, activity, heat, and your body's needs.</p></details>
+<details><summary>Regular eating</summary><p class="small">Try not to make food a reward you have to earn. Consistent nourishment helps support energy, concentration, mood, and exercise.</p></details>
+<details><summary>Fueling activity</summary><p class="small">If you are active, give your body enough food and recovery to support that activity. More exercise does not mean you need to restrict food.</p></details>
+<label class="block">How did I care for my body through food and hydration today?<textarea id="nutritionNote" placeholder="Energy, hydration, meals, or anything you noticed — without judging yourself."></textarea></label>
+</div>
+</section>
+
+<section id="mind">
+<div class="card"><h2>Mind & Emotional Path</h2><p class="small">Feelings are information, not commands. You can acknowledge a hard feeling without letting it decide everything you do.</p>
+<details open><summary>1. Name it</summary><p class="small">“I feel anxious.” “I feel discouraged.” “I feel lonely.”</p></details>
+<details><summary>2. Understand it</summary><p class="small">What happened? What am I telling myself? What do I need? What can I control?</p></details>
+<details><summary>3. Process it</summary><p class="small">Try walking, writing, prayer, breathing, talking to someone, rest, music, or another healthy strategy.</p></details>
+<details><summary>4. Keep living</summary><p class="small">Choose one small action that still moves you toward the life you value.</p></details>
+<details><summary>5. Get support</summary><p class="small">Asking a trusted person or qualified professional for help is a strong step when struggles become difficult to manage alone.</p></details>
+<label class="block">What am I feeling and what do I need?<textarea></textarea></label>
+</div>
+<div class="card"><h2>A deeper emotional process</h2>
+<details open><summary>Notice</summary><p class="small">What happened? What emotion showed up? Where did you feel it? What changed around you?</p></details>
+<details><summary>Interpret</summary><p class="small">What story is your mind telling you? Is it definitely true, partly true, or an old fear speaking?</p></details>
+<details><summary>Need</summary><p class="small">Do you need rest, connection, safety, encouragement, structure, prayer, movement, or professional support?</p></details>
+<details><summary>Choose</summary><p class="small">What is the smallest healthy action that matches the person you want to be?</p></details>
+<details><summary>Review</summary><p class="small">Later, ask what helped. Over time, this turns difficult experiences into information you can learn from.</p></details>
+</div></section>
+
+<section id="social">
+<div class="card"><h2>Social Path</h2><p class="small">Become someone who genuinely cares about people, learns their stories, makes people feel welcome, and knows how to enjoy life with them.</p>
+<details open><summary>Initiate</summary><p class="small">Say hello. Ask a simple question. Invite someone into what you're already doing.</p></details>
+<details><summary>Listen</summary><p class="small">Ask follow-up questions. Remember details. Let people finish.</p></details>
+<details><summary>Love</summary><p class="small">Notice who needs encouragement, inclusion, patience, or practical help.</p></details>
+<details><summary>Have fun</summary><p class="small">Connection isn't only serious conversation. Laugh, participate, play, and enjoy people.</p></details>
+<details><summary>Be known</summary><p class="small">Let trustworthy people know you too—your interests, hopes, humor, and struggles.</p></details>
+<label class="block">Who did I connect with today?<textarea></textarea></label>
+</div>
+<div class="card"><h2>Become more connected</h2>
+<details open><summary>Start conversations</summary><p class="small">Use the environment: “How do you know everyone here?” “What have you been working on?” “How has your week been?”</p></details>
+<details><summary>Go deeper</summary><p class="small">When someone gives an interesting answer, ask one follow-up question instead of immediately talking about yourself.</p></details>
+<details><summary>Remember people</summary><p class="small">Remember names, interests, important events, and what someone told you last time.</p></details>
+<details><summary>Let yourself have fun</summary><p class="small">Invite people to activities. Be willing to be a little silly. Connection grows through shared experiences, not only deep conversations.</p></details>
+<details><summary>Build courage</summary><p class="small">Rejection or awkwardness does not mean you failed. Social skill grows through practice.</p></details>
+</div></section>
+
+
+<section id="friends">
+<div class="card">
+<h2>Friends & Accountability</h2>
+<p class="small">Build a small circle of trusted people who help you grow. In the current version, friend data stays on this device. When we connect the app to an online account system, the same privacy rules will be enforced on the server.</p>
+
+<div class="privacy-banner"><strong>🔒 Privacy first</strong><span>Private reflections, repentance notes, mental/emotional check-ins, and nutrition details are never shared with friends by default.</span></div>
+
+<h3>Add a trusted friend</h3>
+<label class="block">Friend's name<input type="text" id="friendName" autocomplete="off" placeholder="Someone you know and trust"></label>
+<label class="block">Connection<input type="text" id="friendRole" autocomplete="off" placeholder="Friend, sibling, mentor, church friend..."></label>
+<button type="button" class="friendBtn" id="addFriendBtn">Add Friend</button>
+<div id="friendStatus" class="save-status" aria-live="polite"></div>
+<div id="friendList"></div>
+</div>
+
+<div class="card">
+<h2>Accountability partner</h2>
+<p class="small">An accountability partner is someone you intentionally choose to encourage and check in with. You decide what you share.</p>
+<div class="two-col">
+<div><h3>Good accountability</h3><ul class="small"><li>Ask how you're doing.</li><li>Encourage consistency without demanding perfection.</li><li>Celebrate growth.</li><li>Respect privacy and boundaries.</li></ul></div>
+<div><h3>Keep private</h3><ul class="small"><li>Repentance details</li><li>Mental/emotional journal entries</li><li>Nutrition details</li><li>Personal reflections</li></ul></div>
+</div>
+</div>
+
+<div class="card">
+<h2>What can friends see?</h2>
+<p class="small">Everything below is <strong>off by default</strong>. These switches are the privacy plan for the online version too: private data and shared data will be stored separately.</p>
+<div class="privacy-grid">
+<label class="privacy-row"><span><b>Daily completion</b><small>Show whether you checked in today.</small></span><input type="checkbox" id="shareDaily"></label>
+<label class="privacy-row"><span><b>Streak</b><small>Show your current consistency streak.</small></span><input type="checkbox" id="shareStreak"></label>
+<label class="privacy-row"><span><b>Christlike attributes</b><small>Share only your general growth ratings.</small></span><input type="checkbox" id="shareAttributes"></label>
+<label class="privacy-row"><span><b>Physical activity</b><small>Share walks/strength activity without body measurements.</small></span><input type="checkbox" id="sharePhysical"></label>
+<label class="privacy-row locked"><span><b>Mental & emotional details</b><small>Always private in this app.</small></span><input type="checkbox" disabled></label>
+<label class="privacy-row locked"><span><b>Repentance details</b><small>Always private in this app.</small></span><input type="checkbox" disabled></label>
+<label class="privacy-row locked"><span><b>Nutrition details</b><small>Always private in this app.</small></span><input type="checkbox" disabled></label>
+<label class="privacy-row locked"><span><b>Personal journal/reflections</b><small>Always private in this app.</small></span><input type="checkbox" disabled></label>
+</div>
+<div id="privacyStatus" class="save-status"></div>
+</div>
+
+<div class="card">
+<h2>Encouragement points</h2>
+<p class="small">Points reward healthy participation, not perfection. They are a game layer—not a measure of your spiritual worth.</p>
+<div class="metric-grid"><div class="metric"><span class="small">Today's points</span><strong id="encouragePoints">0</strong></div><div class="metric"><span class="small">Next encouragement</span><strong id="pointsNeeded">10</strong></div></div>
+<div class="progress"><div class="bar" id="pointsBar" style="width:0"></div></div>
+<p class="small">At 10 points, you can write an encouragement note to a trusted friend.</p>
+</div>
+
+<div class="card">
+<h2>Encourage someone</h2>
+<label class="block">Friend<select id="encourageTo"><option value="">Choose a friend…</option></select></label>
+<label class="block">Encouraging note<textarea id="encourageNote" maxlength="500" placeholder="Something specific you appreciate, notice, or want them to know..."></textarea></label>
+<div class="small" id="noteCount">0 / 500</div>
+<button type="button" class="friendBtn" id="sendEncourageBtn">Send encouragement</button>
+<div id="encourageStatus" class="save-status" aria-live="polite"></div>
+</div>
+
+<div class="card">
+<h2>My encouragement history</h2>
+<p class="small">These are notes you have written. They are stored locally until the online messaging system is connected.</p>
+<div id="encourageHistory"><p class="small">No encouragement notes yet.</p></div>
+</div>
+</section>
+<section id="weekly">
+<div class="card"><h2>Weekly Reset</h2><p class="small">Look back honestly and kindly. The goal is direction, not perfection.</p>
+<h3>Spiritual</h3><label class="block">Where did I see Christ, God, goodness, or grace?<textarea></textarea></label>
+<h3>Physical</h3><label class="block">Walks this week<input type="number" min="0" max="7"></label><label class="block">Strength sessions<input type="number" min="0"></label>
+<h3>Mind & emotions</h3><textarea placeholder="What emotions were strongest? What helped?"></textarea>
+<h3>Social</h3><textarea placeholder="Who did I get to know? Who did I make feel valued? Did I have fun?"></textarea>
+<h3>Next week</h3><textarea placeholder="One spiritual, physical, mental, and social goal."></textarea>
+</div>
+<div class="card"><h2>Weekly review — deeper questions</h2>
+<details open><summary>What grew?</summary><p class="small">Where did I become more faithful, capable, resilient, or connected?</p></details>
+<details><summary>What hurt?</summary><p class="small">What was difficult without judging myself for struggling?</p></details>
+<details><summary>What pattern do I see?</summary><p class="small">Look for repeated triggers, habits, relationships, environments, or practices that helped.</p></details>
+<details><summary>What should I stop?</summary><p class="small">Choose one thing that drains you or moves you away from your values.</p></details>
+<details><summary>What should I start?</summary><p class="small">Choose one small practice that would make next week better.</p></details>
+<details><summary>What should I continue?</summary><p class="small">Protect the things that are already helping.</p></details>
+</div></section>
+
+<footer>My Path • A framework for becoming more whole, one step at a time.</footer>
+</main>
+
+<script>
+(function(){
+const KEY='myPathCompleteV1';
+const KEYS=['prayer','study','repent','attribute','serve','walk','strength','bodycare','checkin','process','reset','talk','interest','fun'];
+const ATTRIBUTE_KEY='myPathAttributesV1';
+const ATTRIBUTE_NAMES=['Faith','Hope','Charity & Love','Virtue','Knowledge','Patience','Humility','Diligence','Obedience','Kindness','Forgiveness','Self-Control','Compassion','Courage','Integrity','Gratitude','Service','Perseverance','Meekness','Teachability'];
+let state={days:{}};
+try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+state.days=state.days||{};
+let attributeState={};
+try{attributeState=JSON.parse(localStorage.getItem(ATTRIBUTE_KEY)||'{}')}catch(e){}
+
+function dateKey(d){return d.toISOString().slice(0,10)}
+function todayKey(){return dateKey(new Date())}
+function getDay(k){return state.days[k]||{}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));const el=document.getElementById('saveStatus');if(el)el.textContent='Saved just now.'}catch(e){const el=document.getElementById('saveStatus');if(el)el.textContent='This browser is not allowing local saving.'}}
+function score(k){const d=getDay(k);let n=0;KEYS.forEach(x=>{if(d[x])n++});return Math.round(n/KEYS.length*100)}
+function syncToday(){
+ const d=getDay(todayKey());
+ document.querySelectorAll('[data-track]').forEach(x=>d[x.dataset.track]=!!x.checked);
+ const r=document.getElementById('dailyReflection');if(r)d.reflection=r.value;
+ state.days[todayKey()]=d;save();render();updatePoints();
+}
+function loadToday(){const d=getDay(todayKey());document.querySelectorAll('[data-track]').forEach(x=>x.checked=!!d[x.dataset.track]);const r=document.getElementById('dailyReflection');if(r)r.value=d.reflection||''}
+function render(){
+ const p=score(todayKey());const pct=document.getElementById('todayPercent'),bar=document.getElementById('todayBar');
+ if(pct)pct.textContent=p+'%';if(bar)bar.style.width=p+'%';
+ let streak=0,d=new Date();while(score(dateKey(d))>0){streak++;d.setDate(d.getDate()-1)}
+ const st=document.getElementById('streak');if(st)st.textContent=streak+' day'+(streak===1?'':'s');draw(currentPeriod);
+}
+let currentPeriod='week';window.setPeriod=function(p){currentPeriod=p;draw(p)};
+function draw(period){
+ const chart=document.getElementById('historyChart');if(!chart)return;let items=[];
+ if(period==='week'){for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);items.push({d,v:score(dateKey(d))})}}
+ else if(period==='month'){for(let i=29;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);items.push({d,v:score(dateKey(d))})}}
+ else{for(let i=11;i>=0;i--){let d=new Date();d.setMonth(d.getMonth()-i);let sum=0,n=0,days=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();for(let j=1;j<=days;j++){let x=new Date(d.getFullYear(),d.getMonth(),j),k=dateKey(x);if(state.days[k]){sum+=score(k);n++}}items.push({d,v:n?Math.round(sum/n):0})}}
+ chart.innerHTML=items.map(x=>'<div class="history-bar" title="'+x.v+'%" style="height:'+Math.max(4,x.v)+'%"></div>').join('');
+ const fmt=d=>period==='year'?d.toLocaleDateString(undefined,{month:'short',year:'numeric'}):d.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+ const a=document.getElementById('historyStart'),b=document.getElementById('historyEnd'),c=document.getElementById('historySummary');if(a)a.textContent=fmt(items[0].d);if(b)b.textContent=fmt(items[items.length-1].d);if(c){const vals=items.map(x=>x.v),avg=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);c.textContent='Average logged daily progress: '+avg+'%. Days with no entries remain at 0% so you can see consistency honestly.'}
+}
+window.saveProgress=syncToday;
+window.exportBackup=function(){const blob=new Blob([JSON.stringify({progress:state,attributes:attributeState,privacy:JSON.parse(localStorage.getItem('myPathPrivacyV1')||'{}')},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-path-private-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+window.clearHistory=function(){if(confirm('Clear all saved progress on this device? This will not remove your friends or privacy settings.')){state={days:{}};save();loadToday();render();updatePoints()}};
+function saveAttributes(){try{localStorage.setItem(ATTRIBUTE_KEY,JSON.stringify(attributeState))}catch(e){}}
+function buildAttributeRatings(){
+ const box=document.getElementById('attributeRatings');if(!box)return;
+ box.innerHTML=ATTRIBUTE_NAMES.map((name,i)=>{const val=attributeState[i]||0;return '<div class="rating-row"><div class="rating-title"><b>'+name+'</b><span class="rating-help">'+(val?val+'/5':'Not rated')+'</span></div><div class="rating-buttons">'+[1,2,3,4,5].map(n=>'<button type="button" data-rating="'+i+'" data-value="'+n+'" class="'+(n<=val?'selected':'')+'" aria-label="'+name+' '+n+' out of 5">★</button>').join('')+'</div></div>'}).join('');
+ box.querySelectorAll('[data-rating]').forEach(btn=>btn.addEventListener('click',function(){attributeState[this.dataset.rating]=Number(this.dataset.value);saveAttributes();buildAttributeRatings()}));
+}
+window.addEventListener('DOMContentLoaded',function(){
+ document.querySelectorAll('[data-track]').forEach(x=>x.addEventListener('change',syncToday));
+ const reflection=document.getElementById('dailyReflection');if(reflection)reflection.addEventListener('input',syncToday);
+ loadToday();buildAttributeRatings();render();
+});
+})();
+</script>
+
+<script>
+(function(){
+const FRIEND_KEY='myPathFriendsV2';
+const PRIV_KEY='myPathPrivacyV1';
+let friendsState={friends:[],notes:[]};
+let privacy={daily:false,streak:false,attributes:false,physical:false};
+try{friendsState=JSON.parse(localStorage.getItem(FRIEND_KEY)||'{}')}catch(e){}
+try{privacy=Object.assign(privacy,JSON.parse(localStorage.getItem(PRIV_KEY)||'{}'))}catch(e){}
+friendsState.friends=Array.isArray(friendsState.friends)?friendsState.friends:[];
+friendsState.notes=Array.isArray(friendsState.notes)?friendsState.notes:[];
+function esc(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function saveFriends(){try{localStorage.setItem(FRIEND_KEY,JSON.stringify(friendsState))}catch(e){}}
+function savePrivacy(){try{localStorage.setItem(PRIV_KEY,JSON.stringify(privacy))}catch(e){}}
+function status(id,msg){const el=document.getElementById(id);if(el)el.textContent=msg}
+function renderFriends(){
+ const box=document.getElementById('friendList');if(!box)return;
+ if(!friendsState.friends.length){box.innerHTML='<div class="empty-state"><b>Your trusted circle is empty.</b><p class="small">Start with people you already know and trust.</p></div>';renderFriendSelect();return}
+ box.innerHTML=friendsState.friends.map((f,i)=>'<div class="friend-card"><div class="friend-head"><div><b>'+esc(f.name)+'</b><div class="small">'+esc(f.role||'Friend')+'</div></div><span class="partner-badge '+(f.partner?'on':'')+'">'+(f.partner?'★ Partner':'Friend')+'</span></div><div class="friend-meta"><span>🔒 Private by default</span><span>'+((f.shared||[]).length)+' shared settings</span></div><div class="friend-actions"><button type="button" data-action="partner" data-index="'+i+'">'+(f.partner?'Remove partner role':'Make accountability partner')+'</button><button type="button" data-action="encourage" data-index="'+i+'">Encourage</button><button type="button" data-action="remove" data-index="'+i+'">Remove</button></div></div>').join('');
+ box.querySelectorAll('[data-action]').forEach(btn=>btn.addEventListener('click',function(){const i=Number(this.dataset.index),a=this.dataset.action;if(!friendsState.friends[i])return;if(a==='partner'){friendsState.friends[i].partner=!friendsState.friends[i].partner;saveFriends();renderFriends();status('friendStatus',friendsState.friends[i].partner?'Accountability partner added.':'Accountability partner removed.')}if(a==='encourage'){selectFriend(i)}if(a==='remove'){if(confirm('Remove '+friendsState.friends[i].name+' from your trusted circle?')){friendsState.friends.splice(i,1);saveFriends();renderFriends();status('friendStatus','Friend removed.')}}}));
+ renderFriendSelect();
+}
+function renderFriendSelect(){const s=document.getElementById('encourageTo');if(!s)return;const old=s.value;s.innerHTML='<option value="">Choose a friend…</option>'+friendsState.friends.map((f,i)=>'<option value="'+i+'">'+esc(f.name)+'</option>').join('');if([...s.options].some(o=>o.value===old))s.value=old}
+function selectFriend(i){const s=document.getElementById('encourageTo');if(s){s.value=String(i)}location.hash='friends';setTimeout(()=>document.getElementById('encourageNote')?.focus(),50)}
+function addFriend(){const n=document.getElementById('friendName'),r=document.getElementById('friendRole');const name=n.value.trim();if(!name){status('friendStatus','Please enter a name.');n.focus();return}if(friendsState.friends.some(f=>f.name.toLowerCase()===name.toLowerCase())){status('friendStatus','That friend is already in your circle.');return}friendsState.friends.push({name,role:r.value.trim(),partner:false,shared:[]});saveFriends();n.value='';r.value='';renderFriends();status('friendStatus',name+' was added to your trusted circle.')}
+function todayPoints(){let p=0;document.querySelectorAll('#daily [data-track]').forEach(x=>{if(x.checked)p++});document.querySelectorAll('[data-repent]').forEach(x=>{if(x.checked)p++});return p}
+function updatePoints(){const p=todayPoints(),a=document.getElementById('encouragePoints'),b=document.getElementById('pointsNeeded'),bar=document.getElementById('pointsBar');if(a)a.textContent=p;if(b)b.textContent=Math.max(0,10-p);if(bar)bar.style.width=Math.min(100,p/10*100)+'%'}
+function sendEncouragement(){const p=todayPoints(),s=document.getElementById('encourageTo'),note=document.getElementById('encourageNote'),st='encourageStatus';if(p<10){status(st,'You need '+(10-p)+' more points today before an encouragement note unlocks.');return}if(!s.value){status(st,'Choose a friend first.');return}const f=friendsState.friends[Number(s.value)],text=note.value.trim();if(!f||!text){status(st,'Choose a friend and write a note first.');return}friendsState.notes.unshift({to:f.name,note:text,date:new Date().toLocaleString()});saveFriends();note.value='';document.getElementById('noteCount').textContent='0 / 500';status(st,'Encouragement saved for '+f.name+'. In the online version, this will become a private message delivered only to that friend.');renderNotes()}
+function renderNotes(){const box=document.getElementById('encourageHistory');if(!box)return;if(!friendsState.notes.length){box.innerHTML='<p class="small">No encouragement notes yet.</p>';return}box.innerHTML=friendsState.notes.slice(0,20).map(n=>'<div class="note-card"><b>'+esc(n.to)+'</b><div class="small">'+esc(n.date)+'</div><p>'+esc(n.note)+'</p></div>').join('')}
+function loadPrivacy(){['shareDaily','shareStreak','shareAttributes','sharePhysical'].forEach(k=>{const el=document.getElementById(k);if(el){const key=k.replace('share','').toLowerCase();el.checked=!!privacy[key];el.addEventListener('change',()=>{privacy[key]=el.checked;savePrivacy();status('privacyStatus','Privacy settings saved.')})}})}
+const addBtn=document.getElementById('addFriendBtn');if(addBtn)addBtn.addEventListener('click',addFriend);
+const sendBtn=document.getElementById('sendEncourageBtn');if(sendBtn)sendBtn.addEventListener('click',sendEncouragement);
+const note=document.getElementById('encourageNote');if(note)note.addEventListener('input',()=>{document.getElementById('noteCount').textContent=note.value.length+' / 500';updatePoints()});
+document.querySelectorAll('[data-track],[data-repent]').forEach(x=>x.addEventListener('change',updatePoints));
+loadPrivacy();renderFriends();renderNotes();updatePoints();
+})();
+</script>
+</body>
+</html>
